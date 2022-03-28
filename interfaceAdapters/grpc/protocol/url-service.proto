@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package protocol;
+
+option go_package = "./protocol";
+
+message Url{
+  int64 Id = 1;
+  string Code = 2;
+  string Url = 3;
+  string ShortUrl = 4;
+  string Domain = 5;
+  int64 Counter = 6;
+}
+
+message VoidResponse{}
+
+message UrlId{
+  int64 Value = 1;
+}
+
+message Counter{
+  int64 Value = 1;
+}
+
+service UrlService{
+  rpc Add(Url) returns(VoidResponse){}
+  rpc Delete(UrlId) returns (VoidResponse){}
+  rpc Get(UrlId) returns(Url){}
+  rpc GetCounter(UrlId) returns(Counter){}
+}

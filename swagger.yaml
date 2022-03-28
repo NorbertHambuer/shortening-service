@@ -1,0 +1,206 @@
+basePath: /
+consumes:
+- application/json
+definitions:
+  Url:
+    description: |-
+      Url defines the structure for the url object
+      swagger: model
+    properties:
+      code:
+        description: short url code
+        maximum: 8
+        minimum: 8
+        type: string
+        x-go-name: Code
+      counter:
+        description: integer that represents the number of times the redirect endpoint
+          was called for the code
+        format: int64
+        minimum: 0
+        type: integer
+        x-go-name: Counter
+      domain:
+        description: shortened url domain
+        minimum: 8
+        type: string
+        x-go-name: Domain
+      id:
+        description: the id for this url
+        format: int64
+        type: integer
+        x-go-name: Id
+      shortUrl:
+        description: shortened url
+        minimum: 16
+        type: string
+        x-go-name: ShortUrl
+      url:
+        description: original url
+        minimum: 8
+        type: string
+        x-go-name: Url
+    required:
+    - id
+    type: object
+    x-go-package: github.com/norby7/shortening-service/entities
+  addParam:
+    properties:
+      code:
+        description: short url code
+        maximum: 8
+        minimum: 8
+        type: string
+        x-go-name: Code
+      url:
+        description: original url
+        minimum: 8
+        type: string
+        x-go-name: Url
+    required:
+    - url
+    type: object
+    x-go-package: github.com/norby7/shortening-service/interfaceAdapters/http
+info:
+  description: Documentation for url shortening service API
+  title: classification of url shortening service API
+  version: 1.0.0
+paths:
+  /{Code}:
+    get:
+      description: a to a long url or returns 404 if no shortUrl exists in the database
+        with the given code
+      operationId: Redirect
+      parameters:
+      - description: Url object Code
+        in: path
+        name: Code
+        required: true
+        type: string
+      responses:
+        "302":
+          $ref: '#/responses/noContent'
+        "404":
+          $ref: '#/responses/noContent'
+        "500":
+          $ref: '#/responses/errorResponse'
+      tags:
+      - root
+  /api:
+    post:
+      description: Creates a new url in the database and then returns it in the response
+      operationId: Add
+      parameters:
+      - description: |-
+          Url object used for Add<br>
+          Note: the "code" field is optional, the service will generate a random code if none given
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/addParam'
+      responses:
+        "201":
+          $ref: '#/responses/urlResponse'
+        "409":
+          $ref: '#/responses/codeExistsErrorResponse'
+        "422":
+          $ref: '#/responses/errorResponse'
+        "500":
+          $ref: '#/responses/errorResponse'
+      tags:
+      - api
+  /api/{Id}:
+    delete:
+      description: Deletes a url
+      operationId: Delete
+      parameters:
+      - description: Url object Id
+        format: int64
+        in: path
+        name: Id
+        required: true
+        type: integer
+      responses:
+        "200":
+          $ref: '#/responses/noContent'
+        "400":
+          $ref: '#/responses/errorResponse'
+        "500":
+          $ref: '#/responses/errorResponse'
+      tags:
+      - api
+    get:
+      description: Returns a url based on the given ID or 404 if no short url exists
+        with the given code
+      operationId: Get
+      parameters:
+      - description: Url object Id
+        format: int64
+        in: path
+        name: Id
+        required: true
+        type: integer
+      responses:
+        "200":
+          $ref: '#/responses/urlResponse'
+        "404":
+          $ref: '#/responses/noContent'
+        "422":
+          $ref: '#/responses/errorResponse'
+        "500":
+          $ref: '#/responses/errorResponse'
+      tags:
+      - api
+  /counter/{Id}:
+    get:
+      description: Returns the redirections counter for a given url object Id
+      operationId: GetCounter
+      parameters:
+      - description: Url object Id
+        format: int64
+        in: path
+        name: Id
+        required: true
+        type: integer
+      responses:
+        "200":
+          $ref: '#/responses/counterResponse'
+        "404":
+          $ref: '#/responses/noContent'
+        "500":
+          $ref: '#/responses/errorResponse'
+      tags:
+      - counter
+produces:
+- application/json
+responses:
+  codeExistsErrorResponse:
+    description: Code already exists in the database error message response
+    headers:
+      message:
+        type: string
+  counterResponse:
+    description: Redirections counter response
+    headers:
+      counter:
+        format: int64
+        type: integer
+  errorResponse:
+    description: Generic error message response
+    headers:
+      message:
+        type: string
+  noContent:
+    description: ""
+  urlResponse:
+    description: Data structure representing a single url
+    headers:
+      Location:
+        description: Location header that contains the short url
+        type: string
+    schema:
+      $ref: '#/definitions/Url'
+schemes:
+- http
+swagger: "2.0"
