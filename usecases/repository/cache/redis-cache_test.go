@@ -28,7 +28,7 @@ func TestInvalidNewRedisCache(t *testing.T) {
 	}
 }
 
-func TestSetGetShortUrl(t *testing.T){
+func TestSetGetShortUrl(t *testing.T) {
 	mr, err := miniredis.Run()
 	if err != nil {
 		log.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -42,17 +42,17 @@ func TestSetGetShortUrl(t *testing.T){
 	}
 
 	err = client.SetShortUrl("test", "www.test.com")
-	if err != nil{
+	if err != nil {
 		t.Errorf("unable to set short url: %s", err.Error())
 	}
 
 	_, err = client.GetShortUrl("test")
-	if err != nil{
+	if err != nil {
 		t.Errorf("unable to get short url: %s", err.Error())
 	}
 }
 
-func TestGetShortUrlError(t *testing.T){
+func TestGetShortUrlError(t *testing.T) {
 	mr, err := miniredis.Run()
 	if err != nil {
 		log.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -66,7 +66,28 @@ func TestGetShortUrlError(t *testing.T){
 	}
 
 	_, err = client.GetShortUrl("test1")
-	if err == nil{
+	if err == nil {
 		t.Errorf("expected error getting short url, got nil")
+	}
+}
+
+func TestCacheDisabled(t *testing.T) {
+	redisCache, err := NewRedisCache("", "", "")
+	if err == nil {
+		t.Error("expected error connecting to redis cache, got nil")
+	}
+
+	err = redisCache.SetShortUrl("code", "url")
+	if err != nil {
+		t.Errorf("expected no error, got (%s)", err.Error())
+	}
+
+	url, err := redisCache.GetShortUrl("code")
+	if url != "" {
+		t.Errorf("expected empty url, got (%s)", url)
+	}
+
+	if err != nil {
+		t.Errorf("expected no error, got (%s)", err.Error())
 	}
 }
