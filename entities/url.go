@@ -12,7 +12,7 @@ import (
 type Url struct {
 	// the id for this url
 	//
-	// required: true
+	// min: 1
 	Id int64 `json:"id"`
 	// short url code
 	//

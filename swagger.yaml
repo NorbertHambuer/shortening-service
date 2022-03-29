@@ -28,6 +28,7 @@ definitions:
       id:
         description: the id for this url
         format: int64
+        minimum: 1
         type: integer
         x-go-name: Id
       shortUrl:
@@ -40,8 +41,6 @@ definitions:
         minimum: 8
         type: string
         x-go-name: Url
-    required:
-    - id
     type: object
     x-go-package: github.com/norby7/shortening-service/entities
   addParam:
@@ -68,8 +67,8 @@ info:
 paths:
   /{Code}:
     get:
-      description: a to a long url or returns 404 if no shortUrl exists in the database
-        with the given code
+      description: Redirects to a long url or returns 404 if no short url exists in
+        the database with the given code
       operationId: Redirect
       parameters:
       - description: Url object Code
