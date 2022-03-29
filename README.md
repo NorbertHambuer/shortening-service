@@ -34,6 +34,17 @@ A simple client for the HTTP service is also available in the `client/http` dire
     ```
 - **DELETE** `/api/{id}` - Deletes an existing shortened URL
 - **GET** `/api/{id}` - Returns a shortened url or status code 404 if the entity doesn't exist
+  <br>Response example for existing URL:
+  ```json
+    {
+      "id": 1,
+      "code": "rcZxZKLB",
+      "url": "https://www.google.ro/search?q=some1235456",
+      "shortUrl": "http://localhost:3000/rcZxZKLB",
+      "domain": "http://localhost:3000",
+      "counter": 0
+    }
+    ```
 - **GET** `/counter/{id}` - Returns the redirections counter for a shortened URL or status code 404 if the URL ID doesn't exist
   <br>Response example:
   ```json
