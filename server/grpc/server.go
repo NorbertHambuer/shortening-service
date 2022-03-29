@@ -22,7 +22,7 @@ import (
 
 // StartServer starts a new grpc server and registers the UrlServiceServer to it
 func StartServer(port *int, service ucService.Interactor, logger *log.Logger) {
-	userService := grpc2.NewUrlGrpcService(service, logger)
+	urlService := grpc2.NewUrlGrpcService(service, logger)
 	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", *port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
@@ -34,7 +34,7 @@ func StartServer(port *int, service ucService.Interactor, logger *log.Logger) {
 	//  register  grpcurl  The required  reflection  service
 	reflection.Register(grpcServer)
 
-	protocol.RegisterUrlServiceServer(grpcServer, userService)
+	protocol.RegisterUrlServiceServer(grpcServer, urlService)
 	go func() {
 		fmt.Printf("Starting grpc server on port: %d\n", *port)
 		err := grpcServer.Serve(lis)
@@ -91,7 +91,7 @@ func main() {
 
 	// creates a new cache object
 	redisCache, err := ucCache.NewRedisCache(os.Getenv("REDIS_HOSTNAME"), os.Getenv("REDIS_PORT"), os.Getenv("REDIS_PASSWORD"))
-	if err != nil{
+	if err != nil {
 		l.Println("unable to connect to redis cache: " + err.Error())
 	}
 

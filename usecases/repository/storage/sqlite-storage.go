@@ -25,7 +25,7 @@ func NewSqliteStorage(p string, maxConns int) (*SqliteStorage, error) {
 		return nil, fmt.Errorf("unable to open sqlite database: %s", err.Error())
 	}
 
-	if maxConns != 0{
+	if maxConns != 0 {
 		db.SetMaxIdleConns(maxConns)
 		db.SetMaxOpenConns(maxConns)
 	}
@@ -91,7 +91,7 @@ func initializeSchema(handler *sql.DB) error {
 		return fmt.Errorf("unable to start transaction: %s", err.Error())
 	}
 
-	// execute insert question statement
+	// execute insert urls statement
 	_, err = tx.Exec(sqlScript)
 	if err != nil {
 		_ = tx.Rollback()
@@ -178,7 +178,7 @@ func (s *SqliteStorage) GetByUrl(url string) (entities.Url, error) {
 }
 
 // IncrementCounter increments the counter for the given code
-func (s *SqliteStorage) IncrementCounter(code string) error{
+func (s *SqliteStorage) IncrementCounter(code string) error {
 	if _, err := s.Handler.Exec(`UPDATE urls SET counter = counter + 1 WHERE code = ?`, code); err != nil {
 		return err
 	}

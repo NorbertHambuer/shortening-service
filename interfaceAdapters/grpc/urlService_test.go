@@ -84,11 +84,11 @@ func (s *ServiceMock) IncrementCounter(string) {
 func init() {
 	serviceMock := ServiceMock{}
 	l := log.New(os.Stdout, "urls-api", log.LstdFlags)
-	userService := NewUrlGrpcService(&serviceMock, l)
+	urlService := NewUrlGrpcService(&serviceMock, l)
 
 	lis = bufconn.Listen(bufSize)
 	s := grpc.NewServer()
-	protocol.RegisterUrlServiceServer(s, userService)
+	protocol.RegisterUrlServiceServer(s, urlService)
 	go func() {
 		if err := s.Serve(lis); err != nil {
 			log.Fatalln(err)
