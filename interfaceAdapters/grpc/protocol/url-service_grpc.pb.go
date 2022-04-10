@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UrlServiceClient interface {
-	Add(ctx context.Context, in *Url, opts ...grpc.CallOption) (*VoidResponse, error)
+	Add(ctx context.Context, in *Url, opts ...grpc.CallOption) (*Url, error)
 	Delete(ctx context.Context, in *UrlId, opts ...grpc.CallOption) (*VoidResponse, error)
 	Get(ctx context.Context, in *UrlId, opts ...grpc.CallOption) (*Url, error)
 	GetCounter(ctx context.Context, in *UrlId, opts ...grpc.CallOption) (*Counter, error)
@@ -32,8 +32,8 @@ func NewUrlServiceClient(cc grpc.ClientConnInterface) UrlServiceClient {
 	return &urlServiceClient{cc}
 }
 
-func (c *urlServiceClient) Add(ctx context.Context, in *Url, opts ...grpc.CallOption) (*VoidResponse, error) {
-	out := new(VoidResponse)
+func (c *urlServiceClient) Add(ctx context.Context, in *Url, opts ...grpc.CallOption) (*Url, error) {
+	out := new(Url)
 	err := c.cc.Invoke(ctx, "/protocol.UrlService/Add", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -72,7 +72,7 @@ func (c *urlServiceClient) GetCounter(ctx context.Context, in *UrlId, opts ...gr
 // All implementations must embed UnimplementedUrlServiceServer
 // for forward compatibility
 type UrlServiceServer interface {
-	Add(context.Context, *Url) (*VoidResponse, error)
+	Add(context.Context, *Url) (*Url, error)
 	Delete(context.Context, *UrlId) (*VoidResponse, error)
 	Get(context.Context, *UrlId) (*Url, error)
 	GetCounter(context.Context, *UrlId) (*Counter, error)
@@ -83,7 +83,7 @@ type UrlServiceServer interface {
 type UnimplementedUrlServiceServer struct {
 }
 
-func (UnimplementedUrlServiceServer) Add(context.Context, *Url) (*VoidResponse, error) {
+func (UnimplementedUrlServiceServer) Add(context.Context, *Url) (*Url, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Add not implemented")
 }
 func (UnimplementedUrlServiceServer) Delete(context.Context, *UrlId) (*VoidResponse, error) {

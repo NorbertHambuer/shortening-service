@@ -24,7 +24,7 @@ message Counter{
 }
 
 service UrlService{
-  rpc Add(Url) returns(VoidResponse){}
+  rpc Add(Url) returns(Url){}
   rpc Delete(UrlId) returns (VoidResponse){}
   rpc Get(UrlId) returns(Url){}
   rpc GetCounter(UrlId) returns(Counter){}

@@ -21,9 +21,9 @@ import (
 )
 
 // StartServer starts a new grpc server and registers the UrlServiceServer to it
-func StartServer(port *int, service ucService.Interactor, logger *log.Logger) {
+func StartServer(port int, service ucService.Interactor, logger *log.Logger) {
 	urlService := grpc2.NewUrlGrpcService(service, logger)
-	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", *port))
+	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -36,7 +36,7 @@ func StartServer(port *int, service ucService.Interactor, logger *log.Logger) {
 
 	protocol.RegisterUrlServiceServer(grpcServer, urlService)
 	go func() {
-		fmt.Printf("Starting grpc server on port: %d\n", *port)
+		fmt.Printf("Starting grpc server on port: %d\n", port)
 		err := grpcServer.Serve(lis)
 		if err != nil {
 			log.Fatal(err)
@@ -106,5 +106,5 @@ func main() {
 		portAdr = 3000
 	}
 
-	StartServer(&portAdr, service, l)
+	StartServer(portAdr, service, l)
 }
